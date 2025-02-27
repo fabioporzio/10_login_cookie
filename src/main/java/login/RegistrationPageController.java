@@ -1,9 +1,11 @@
 package login;
 
+import fileManager.UserManager;
 import io.quarkus.qute.Template;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import model.User;
 
 import java.net.URI;
 import java.util.List;
@@ -28,12 +30,11 @@ public class RegistrationPageController {
     @POST
     @Produces(MediaType.TEXT_HTML)
     public Response saveUser(
-            @FormParam("nome") String nome,
             @FormParam("email") String email,
             @FormParam("password") String password
     ) {
         List<User> utentiRegistrati = userManager.getUsersFromFile();
-        User utente = new User(utentiRegistrati.size(), nome, email, password);
+        User utente = new User(utentiRegistrati.size()+1, email, password);
 
         if (!userManager.checkUserExistence(utentiRegistrati, utente)) {
             utentiRegistrati.add(utente);

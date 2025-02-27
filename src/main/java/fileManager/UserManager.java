@@ -1,4 +1,4 @@
-package login;
+package fileManager;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import model.User;

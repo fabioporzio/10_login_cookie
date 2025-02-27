@@ -1,16 +1,14 @@
-package login;
+package model;
 
 public class User {
     private int id;
-    private String username;
     private String email;
     private String password;
 
     public User() {}
 
-    public User(int id, String nome, String email, String password) {
+    public User(int id, String email, String password) {
         this.id = id;
-        this.username = nome;
         this.email = email;
         this.password = password;
     }
@@ -19,9 +17,6 @@ public class User {
         return id;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
     public String getEmail() {
         return email;
@@ -33,10 +28,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setEmail(String email) {

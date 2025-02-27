@@ -1,15 +1,26 @@
 package login;
 
+import fileManager.SessionManager;
 import jakarta.enterprise.context.ApplicationScoped;
+import fileManager.UserManager;
+import model.User;
 
 @ApplicationScoped
 public class UserSessionService {
+
     private String idSessionGenerated = null;
+    private UserManager userManager;
+    private SessionManager sessionManager;
 
     public String login(String email, String password){
-        if ("fabio.porzio00@gmail.com".equals(email) && "1234".equals(password)){
+
+        User user=userManager.getUserByCredentials(email, password);
+
+        if (user!=null){
             double idSession = Math.random() * 3000.0;
             idSessionGenerated = String.valueOf(idSession);
+            sessionManager.writeSession(user.getId() + "," + idSessionGenerated);
+
             return idSessionGenerated;
         } else {
             return null;
