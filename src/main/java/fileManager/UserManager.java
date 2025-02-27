@@ -1,6 +1,7 @@
 package login;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import model.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -20,11 +21,10 @@ public class UserManager {
             for (CSVRecord record : csvParser)
             {
                 int id = Integer.parseInt(record.get("ID"));
-                String nome = record.get("NOME");
                 String email = record.get("EMAIL");
                 String password = record.get("PASSWORD");
 
-                User utenteRegistrato = new User(id, nome, email, password);
+                User utenteRegistrato = new User(id, email, password);
                 utentiRegistrati.add(utenteRegistrato);
             }
         } catch (IOException e) {
@@ -34,9 +34,9 @@ public class UserManager {
 
     public void saveUsers(List<User> utenti) {
         try (Writer writer = new FileWriter("users.csv");
-             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("ID", "NOME", "EMAIL", "PASSWORD"))) {
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("ID", "EMAIL", "PASSWORD"))) {
             for (User utente : utenti) {
-                csvPrinter.printRecord(utente.getId() ,utente.getUsername(), utente.getEmail(), utente.getPassword());
+                csvPrinter.printRecord(utente.getId(), utente.getEmail(), utente.getPassword());
             }
             csvPrinter.flush();
             System.out.println("Updated file");
@@ -48,7 +48,7 @@ public class UserManager {
 
     public boolean checkUserExistence(List<User> utentiRegistrati, User utente) {
         for (User utenteRegistrato : utentiRegistrati) {
-            if (utenteRegistrato.getUsername().equals(utente.getUsername()) || utenteRegistrato.getEmail().equals(utente.getEmail())) {
+            if (utenteRegistrato.getEmail().equals(utente.getEmail())) {
                 return true;
             }
         }
