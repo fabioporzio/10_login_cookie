@@ -1,15 +1,15 @@
 package model;
 
 public class Session {
-    private String idUtente;
+    private int idUtente;
     private String idSession;
 
-    public Session(String idUtente, String idSession) {
+    public Session(int idUtente, String idSession) {
         this.idUtente = idUtente;
         this.idSession = idSession;
     }
 
-    public String getIdUtente() {
+    public int getIdUtente() {
         return idUtente;
     }
 

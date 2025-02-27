@@ -1,6 +1,11 @@
 package fileManager;
 
 import model.Session;
+import model.User;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -9,56 +14,49 @@ import java.util.List;
 public class SessionManager {
     private final static String PATH_USERS = "C:\\ITS\\JAVA-Projects\\quarkus-login-demo-master\\src\\main\\resources\\templates\\users.csv";
 
-    public List<Session> getUsers() {
-        List<Session> users = new ArrayList<>();
+    public List<Session> getSessionsFromFile() {
+        List<Session> sessions = new ArrayList<>();
+        try (Reader reader = new FileReader("sessions.csv");
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.EXCEL.withHeader())) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader(PATH_USERS))) {
-            String line;
+            for (CSVRecord record : csvParser)
+            {
+                int idUser = Integer.parseInt(record.get("ID_UTENTE"));
+                String idSession = record.get("ID_SESSION");
 
-            while ((line = br.readLine()) != null) {
-                String[] valori = line.split(",");
-                if (valori.length >= 3) { // Evita errori se ci sono righe incomplete
-                    String idutente = valori[0];
-                    String idSession = valori[1];
-                    users.add(new Session(idutente, idSession));
-                }
+                Session session = new Session(idUser, idSession);
+                sessions.add(session);
             }
         } catch (IOException e) {
-            return null;
         }
-
-        return users;
+        return sessions;
     }
 
-    public void writeSession(String content) {
+    public void saveSession(Session session) {
 
-        //controllo doppioni
+        try (Writer writer = new FileWriter("sessions.csv", true);
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("ID_UTENTE", "ID_SESSION"))) {
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(PATH_USERS, true))) {
-            writer.write(content + "\n");
-            writer.newLine();
+                csvPrinter.printRecord(session.getIdUtente(), session.getIdSession());
+                csvPrinter.flush();
+                System.out.println("Updated file");
+
         } catch (IOException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
     }
 
-    public Session getSessionById(String id) {
+    public List<Session> getSessionById(String id) {
+        List<Session> sessionsById = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(PATH_USERS))) {
-            String line;
+        List<Session> sessions = getSessionsFromFile();
 
-            while ((line = br.readLine()) != null) {
-                String[] valori = line.split(",");
-                if (valori.length >= 3 && valori[0].equals(id)) { // Evita errori se ci sono righe incomplete
-                    String idUtente = valori[0];
-                    String idSession = valori[1];
-                    return new Session(idUtente, idSession);
-                }
+        for (Session session : sessions) {
+            if (session.getIdSession().equals(id)) {
+                sessionsById.add(session);
             }
-        } catch (IOException e) {
-            return null;
         }
 
-        return null;
+        return sessionsById;
     }
 }

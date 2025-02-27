@@ -3,6 +3,7 @@ package login;
 import fileManager.SessionManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import fileManager.UserManager;
+import model.Session;
 import model.User;
 
 @ApplicationScoped
@@ -14,12 +15,14 @@ public class UserSessionService {
 
     public String login(String email, String password){
 
-        User user=userManager.getUserByCredentials(email, password);
+        User user = userManager.getUserByCredentials(email, password);
 
-        if (user!=null){
+        if (user != null) {
             double idSession = Math.random() * 3000.0;
             idSessionGenerated = String.valueOf(idSession);
-            sessionManager.writeSession(user.getId() + "," + idSessionGenerated);
+
+            Session session = new Session(user.getId(), idSessionGenerated);
+            sessionManager.saveSession(session);
 
             return idSessionGenerated;
         } else {
