@@ -18,7 +18,7 @@ public class ProfileResource {
     }
 
     @GET
-    public Response drawProfile(@CookieParam("UTENTE") String idSession){
+    public Response drawProfile(@CookieParam("sessione") String idSession){
         String email = userSessionService.getUserFromSession(idSession);
 
         if (email == null) {

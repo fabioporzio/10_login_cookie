@@ -5,12 +5,22 @@
     <title>Login</title>
 </head>
 <body>
-    <form action="/login" method="POST">
-        <label for="email">Email</label>
-        <input name="email" id="email" type="email">
-        <label for="password">Password</label>
-        <input name="password" id="password" type="password">
-        <button id="invia" type="submit">Invia</button>
-    </form>
+<h1>Effettua il login!</h1>
+
+<form action="/login" method="post">
+    <fieldset id="login">
+        <legend>Login</legend>
+        <label for="email">
+            Email:
+            <input id="email" name="email" type="email" required>
+        </label>
+        <label for="password">
+            Password:
+            <input id="password" name="password" type="password" required>
+        </label>
+    </fieldset>
+    <button type="submit">Accedi</button>
+    <button type="reset">Svuota</button>
+</form>
 </body>
 </html>

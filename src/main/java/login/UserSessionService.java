@@ -7,7 +7,7 @@ public class UserSessionService {
     private String idSessionGenerated = null;
 
     public String login(String email, String password){
-        if ("vlad@gmail.com".equals(email) && "password".equals(password)){
+        if ("fabio.porzio00@gmail.com".equals(email) && "1234".equals(password)){
             double idSession = Math.random() * 3000.0;
             idSessionGenerated = String.valueOf(idSession);
             return idSessionGenerated;
@@ -18,7 +18,7 @@ public class UserSessionService {
 
     public String getUserFromSession(String session){
         if (isSessionValid(session)) {
-            return "vlad@gmail.com";
+            return "fabio.porzio00@gmail.com";
         } else {
             return null;
         }

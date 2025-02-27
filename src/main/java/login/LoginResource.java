@@ -27,14 +27,17 @@ public class LoginResource {
     }
 
     @POST
-    public Response processLogin(@FormParam("email") String email, @FormParam("password") String password){
+    public Response processLogin(
+            @FormParam("email") String email,
+            @FormParam("password") String password
+    ) {
         System.out.println(email + " " + password);
 
         String idSession = userSessionService.login(email, password);
 
         if(idSession != null){
             return Response.seeOther(URI.create("/profile"))
-                    .cookie(new NewCookie.Builder("UTENTE").value(idSession).build())
+                    .cookie(new NewCookie.Builder("sessione").value(idSession).build())
                     .build();
         } else {
             return Response.status(401).entity(login.instance()).build();
