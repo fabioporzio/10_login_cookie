@@ -1,5 +1,6 @@
 package fileManager;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import model.Session;
 import model.User;
 import org.apache.commons.csv.CSVFormat;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApplicationScoped
 public class SessionManager {
     private final static String PATH_USERS = "C:\\ITS\\JAVA-Projects\\quarkus-login-demo-master\\src\\main\\resources\\templates\\users.csv";
 
@@ -21,10 +23,10 @@ public class SessionManager {
 
             for (CSVRecord record : csvParser)
             {
-                int idUser = Integer.parseInt(record.get("ID_UTENTE"));
+                String id = record.get("ID_UTENTE");
                 String idSession = record.get("ID_SESSION");
 
-                Session session = new Session(idUser, idSession);
+                Session session = new Session(id, idSession);
                 sessions.add(session);
             }
         } catch (IOException e) {
@@ -35,7 +37,7 @@ public class SessionManager {
     public void saveSession(Session session) {
 
         try (Writer writer = new FileWriter("sessions.csv", true);
-             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("ID_UTENTE", "ID_SESSION"))) {
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL)) {
 
                 csvPrinter.printRecord(session.getIdUtente(), session.getIdSession());
                 csvPrinter.flush();

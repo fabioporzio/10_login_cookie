@@ -20,7 +20,7 @@ public class UserManager {
 
             for (CSVRecord record : csvParser)
             {
-                int id = Integer.parseInt(record.get("ID"));
+                String id = record.get("ID");
                 String email = record.get("EMAIL");
                 String password = record.get("PASSWORD");
 
@@ -65,10 +65,10 @@ public class UserManager {
         return null;
     }
 
-    public User getUserById(int id) {
+    public User getUserById(String id) {
         List<User> utentiRegistrati = getUsersFromFile();
         for (User utenteRegistrato : utentiRegistrati) {
-            if (id == utenteRegistrato.getId()) {
+            if (id.equals(utenteRegistrato.getId())) {
                 return utenteRegistrato;
             }
         }

@@ -11,12 +11,12 @@ import java.net.URI;
 import java.util.List;
 
 @Path("registration")
-public class RegistrationPageController {
+public class RegistrationResource {
 
     private final Template registration;
     private final UserManager userManager;
 
-    public RegistrationPageController(Template registration, UserManager userManager) {
+    public RegistrationResource(Template registration, UserManager userManager) {
         this.registration = registration;
         this.userManager = userManager;
     }
@@ -34,7 +34,7 @@ public class RegistrationPageController {
             @FormParam("password") String password
     ) {
         List<User> utentiRegistrati = userManager.getUsersFromFile();
-        User utente = new User(utentiRegistrati.size()+1, email, password);
+        User utente = new User(String.valueOf(utentiRegistrati.size()+1), email, password);
 
         if (!userManager.checkUserExistence(utentiRegistrati, utente)) {
             utentiRegistrati.add(utente);

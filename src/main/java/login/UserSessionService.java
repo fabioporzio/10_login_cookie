@@ -6,45 +6,52 @@ import fileManager.UserManager;
 import model.Session;
 import model.User;
 
+import java.util.List;
+
 @ApplicationScoped
 public class UserSessionService {
 
-    private String idSessionGenerated = null;
-    private UserManager userManager;
-    private SessionManager sessionManager;
+    private final UserManager userManager;
+    private final SessionManager sessionManager;
 
-    public String login(String email, String password){
-
-        User user = userManager.getUserByCredentials(email, password);
-
-        if (user != null) {
-            double idSession = Math.random() * 3000.0;
-            idSessionGenerated = String.valueOf(idSession);
-
-            Session session = new Session(user.getId(), idSessionGenerated);
-            sessionManager.saveSession(session);
-
-            return idSessionGenerated;
-        } else {
-            return null;
-        }
+    public UserSessionService(UserManager userManager, SessionManager sessionManager) {
+        this.userManager = userManager;
+        this.sessionManager = sessionManager;
     }
 
-    public String getUserFromSession(String session){
-        if (isSessionValid(session)) {
-            return "fabio.porzio00@gmail.com";
-        } else {
-            return null;
-        }
+    public Session getIdSession(User user){
+        String idSessionGenerated;
+
+        double idSession = Math.random() * 3000.0;
+        idSessionGenerated = String.valueOf(idSession);
+
+        Session session = new Session(user.getId(), idSessionGenerated);
+
+        return session;
     }
 
-    public void logout(String idSession){
-        if (isSessionValid(idSession)) {
-            idSessionGenerated = null;
+    public User getUserFromSession(String idSession){
+        List<Session> loadedSession = sessionManager.getSessionsFromFile();
+
+        for (Session session1 : loadedSession) {
+            if (session1.getIdSession().equals(idSession)) {
+                User user = userManager.getUserById(session1.getIdUtente());
+                return user;
+            }
         }
+
+        return null;
     }
 
-    private boolean isSessionValid(String idSession) {
-        return idSession != null && !idSession.isEmpty() && idSession.equals(idSessionGenerated);
+    public Session logout(Session session){
+        List<Session> loadedSession = sessionManager.getSessionsFromFile();
+
+        for (Session session1 : loadedSession) {
+            if (session1.getIdSession().equals(session.getIdSession())) {
+                session = null;
+                return session;
+            }
+        }
+        return session;
     }
 }
