@@ -2,7 +2,6 @@ package fileManager;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import model.Session;
-import model.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -34,7 +33,7 @@ public class SessionManager {
         return sessions;
     }
 
-    public void saveSession(Session session) {
+    public void appendSession(Session session) {
 
         try (Writer writer = new FileWriter("sessions.csv", true);
              CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL)) {
@@ -48,17 +47,55 @@ public class SessionManager {
         }
     }
 
-    public List<Session> getSessionById(String id) {
+    public List<Session> filterSessions(Session session) {
+        List<Session> sessions = new ArrayList<>();
+        String id = session.getIdSession();
+        System.out.println("ID_SESSION nel filtro:" + id);
+        try (Reader reader = new FileReader("sessions.csv");
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.EXCEL.withHeader())) {
+
+            for (CSVRecord record : csvParser)
+            {
+                if (!id.equals(record.get("ID_SESSION"))) {
+                    String idUtente = record.get("ID_UTENTE");
+                    String idSession = record.get("ID_SESSION");
+
+                    Session sessionToAdd = new Session(idUtente, idSession);
+                    sessions.add(sessionToAdd);
+                }
+            }
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        return sessions;
+    }
+
+    public void overwriteSession(List<Session> sessions) {
+
+        try (Writer writer = new FileWriter("sessions.csv");
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("ID_UTENTE", "ID_SESSION"))) {
+
+            for (Session session : sessions) {
+                csvPrinter.printRecord(session.getIdUtente(), session.getIdSession());
+            }
+            csvPrinter.flush();
+            System.out.println("Updated file");
+
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
+
+    public Session getSessionByIdSession (String idSession) {
         List<Session> sessionsById = new ArrayList<>();
 
         List<Session> sessions = getSessionsFromFile();
 
         for (Session session : sessions) {
-            if (session.getIdSession().equals(id)) {
-                sessionsById.add(session);
+            if (session.getIdSession().equals(idSession)) {
+                return session;
             }
         }
-
-        return sessionsById;
+        return null;
     }
 }

@@ -10,6 +10,8 @@ import model.Session;
 import model.User;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("logout")
 public class LogoutResource {
@@ -23,8 +25,17 @@ public class LogoutResource {
 
     @POST
     public Response logout(@CookieParam("sessione") String idSession) {
-        User user = userSessionService.getUserFromSession(idSession);
-        Session session = userSessionService.getIdSession(user);
+        System.out.println("ID_SESSION nella pagina di logout:" + idSession);
+
+        Session session = sessionManager.getSessionByIdSession(idSession);
+        System.out.println("ID_SESSION della sessione recuperata" + session.getIdSession());
+
+        List<Session> filteredSessions = sessionManager.filterSessions(session);
+        sessionManager.overwriteSession(filteredSessions);
+
+        for (Session loadedSession : filteredSessions) {
+            System.out.println(loadedSession.getIdSession());
+        }
 
         userSessionService.logout(session);
 

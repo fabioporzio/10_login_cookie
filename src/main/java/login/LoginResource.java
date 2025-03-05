@@ -45,7 +45,10 @@ public class LoginResource {
 
         if (user != null) {
             Session session = userSessionService.getIdSession(user);
-            sessionManager.saveSession(session);
+            System.out.println("ID_SESSION nella pagina di login:" + session.getIdSession());
+            sessionManager.appendSession(session);
+
+            System.out.println(session.getIdUtente() + " " + session.getIdSession());
 
             return Response.seeOther(URI.create("/profile"))
                     .cookie(new NewCookie.Builder("sessione").value(session.getIdSession()).build())
